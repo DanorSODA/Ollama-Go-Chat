@@ -1,0 +1,23 @@
+# Create .gitignore file
+echo "# Binaries and build artifacts
+chat-app
+*.exe
+*.dll
+*.so
+*.dylib
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Go specific
+*.test
+*.out
+/vendor/
+" > .gitignore
