@@ -1,0 +1,28 @@
+services:
+  app:
+    build: .
+    ports:
+      - "11434:11434"
+      - "8080:8080"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    command: /bin/bash -c "chmod +x /app/start.sh && /app/start.sh"
+
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

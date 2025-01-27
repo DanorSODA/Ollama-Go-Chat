@@ -1,21 +1,21 @@
-# Ollama Go Chat
+# Ollama Go Chat with Database Management
 
-A simple chat application built with Go that interfaces with Ollama AI models. This application provides a lightweight command-line interface for interacting with various Ollama models, with built-in response time tracking and Docker support.
+A Go application that combines Ollama AI models with PostgreSQL database management, allowing natural language interactions for database operations. This application provides an AI-powered interface for performing CRUD operations on a user database.
 
 ## Features
 
-- Interactive command-line chat interface
-- Automatic model downloading and management
-- Response time tracking for performance monitoring
-- Support for multiple Ollama models
+- Natural language database operations (Create, Read, Update, Delete)
+- PostgreSQL database integration
+- AI-powered command interpretation
+- Docker Compose setup with persistent storage
+- Interactive command-line interface
 
 ## Requirements
 
-- Go 1.16 or higher
-- Docker (for containerized usage)
-- Ollama (for local development)
+- Docker and Docker Compose
+- Git
 
-## Quick Start with Docker
+## Quick Start with Docker Compose
 
 1. Clone the repository:
 
@@ -24,78 +24,102 @@ git clone git@github.com:DanorSODA/Ollama-Go-Chat.git
 cd Ollama-Go-Chat
 ```
 
-2. Build the Docker image:
+2. Start the application using Docker Compose:
 
 ```bash
-docker build -t ollama-go-chat .
+docker compose up --build
 ```
 
-3. Run the container:
+3. In a new terminal, attach to the running container to interact with the application:
 
 ```bash
-docker run -it ollama-go-chat
+docker exec -it ollama-go-demo-app-1 /bin/bash -c "./chat-app"
 ```
 
-## Local Development
+## Usage Examples
 
-1. Install Ollama from https://ollama.ai
+Once connected, you can interact with the database using natural language. Here are some example commands:
 
-2. Clone the repository:
+### Create Users
+
+```
+> Create a new user named John Doe with email john@example.com age 30 phone +1234567890 role developer
+```
+
+### Read Users
+
+```
+> Show all users
+> Find user with ID 1
+> Find the person with email john@example.com
+```
+
+### Update Users
+
+```
+> Update user 1's email to new@example.com
+```
+
+### Delete Users
+
+```
+> Delete user with ID 1
+```
+
+## Database Schema
+
+The application uses a PostgreSQL database with the following user schema:
+
+- `id`: Serial Primary Key
+- `name`: String (required)
+- `email`: String (required, unique)
+- `age`: Integer (optional)
+- `phone_number`: String (optional)
+- `address`: Text (optional)
+- `role`: String (optional)
+- `is_active`: Boolean
+- `created_at`: Timestamp
+- `updated_at`: Timestamp
+
+## Architecture
+
+The application consists of three main components:
+
+1. **Go Application**: Handles user input and database operations
+2. **Ollama AI**: Interprets natural language commands
+3. **PostgreSQL Database**: Stores user data
+
+## Docker Components
+
+- `app`: Main application container (Go + Ollama)
+- `db`: PostgreSQL database container
+- Persistent volume for database data
+
+## Development
+
+### Local Setup
+
+1. Install Docker and Docker Compose
+2. Clone the repository
+3. Modify `docker-compose.yml` for any custom configurations
+4. Run with `docker compose up --build`
+
+### Customization
+
+- Modify `init.sql` to change the database schema
+- Update `main.go` to add new database operations
+- Adjust the AI model in `const MODEL_NAME` (default: "tinyllama")
+
+## Stopping the Application
+
+To stop the application and clean up:
 
 ```bash
-git clone git@github.com:DanorSODA/Ollama-Go-Chat.git
-cd Ollama-Go-Chat
+docker compose down
 ```
 
-3. Run the Go application:
+To remove all data including the database volume:
 
 ```bash
-go run main.go
+docker compose down -v
 ```
-
-## Usage
-
-Once running, you can:
-
-- Enter prompts at the `>` prompt
-- See response times for each interaction
-- Type `quit` to exit the application
-
-Example interaction:
-
-```
-Starting chat with tinyllama model
-Enter your prompt (or 'quit' to exit):
-> What is Go programming?
-
-Generating response...
-
-----------------------------------------
-AI Response:
-[Model response will appear here]
-
-Response time: 1.23 seconds
-----------------------------------------
-```
-
-## Configuration
-
-The application uses TinyLlama by default for optimal performance on most systems. You can modify the model by changing the `MODEL_NAME` constant in `main.go`:
-
-```go
-const (
-    MODEL_NAME = "tinyllama"  // Change to your preferred model
-)
-```
-
-Available models include:
-
-- `tinyllama` (Default, fastest)
-- `orca-mini` (Light and fast)
-- `phi` (Balanced)
-- `neural-chat` (More capable)
-- `mistral` (Most capable)
-
-## Performance Considerations
-
-- Model response times vary based on your hardware capabilities
